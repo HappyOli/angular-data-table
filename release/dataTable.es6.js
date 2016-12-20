@@ -1045,6 +1045,14 @@ class BodyController{
       return c.group;
     });
 
+
+    $scope.$watch('body.columns', function(){
+        this.groupColumn = this.options.columns.find(function (c) {
+            return c.group;
+        });
+        this.rowsUpdated(true);
+    }, true);
+
     $scope.$watchCollection('body.rows', this.rowsUpdated.bind(this));
 
     if(this.options.scrollbarV || (!this.options.scrollbarV && this.options.paging.externalPaging)){
@@ -1275,10 +1283,12 @@ class BodyController{
    */
   buildGroups(){
     var temp = [];
-
+    var groupColumn = this.groupColumn;
     angular.forEach(this.rowsByGroup, (v, k) => {
       temp.push({
         name: k,
+        display: angular.isDefined(groupColumn.cellDataGetter) ? groupColumn.cellDataGetter(k) : k,
+        count: v.length,
         group: true
       });
 

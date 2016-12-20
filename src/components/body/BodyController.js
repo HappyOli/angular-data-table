@@ -12,6 +12,7 @@ export class BodyController{
   constructor($scope, $timeout){
     this.$scope = $scope;
     this.tempRows = [];
+    var _this = this;
 
     this.treeColumn = this.options.columns.find((c) => {
       return c.isTreeColumn;
@@ -20,6 +21,16 @@ export class BodyController{
     this.groupColumn = this.options.columns.find((c) => {
       return c.group;
     });
+
+
+    $scope.$watch('body.columns', function(){
+        _this.groupColumn = _this.options.columns.find(function (c) {
+            return c.group;
+        });
+        if(angular.isDefined(_this.rows)){
+            _this.rowsUpdated(true);
+        }
+    }, true);
 
     $scope.$watchCollection('body.rows', this.rowsUpdated.bind(this));
 
@@ -251,10 +262,12 @@ export class BodyController{
    */
   buildGroups(){
     var temp = [];
-
+    var groupColumn = this.groupColumn;
     angular.forEach(this.rowsByGroup, (v, k) => {
       temp.push({
         name: k,
+        display: angular.isDefined(groupColumn.cellDataGetter) ? groupColumn.cellDataGetter(k) : k,
+        count: v.length,
         group: true
       });
 

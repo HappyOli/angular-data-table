@@ -875,6 +875,13 @@
         return c.group;
       });
 
+      $scope.$watch('body.columns', function () {
+        this.groupColumn = this.options.columns.find(function (c) {
+          return c.group;
+        });
+        this.rowsUpdated(true);
+      }, true);
+
       $scope.$watchCollection('body.rows', this.rowsUpdated.bind(this));
 
       if (this.options.scrollbarV || !this.options.scrollbarV && this.options.paging.externalPaging) {
@@ -998,7 +1005,7 @@
     }, {
       key: "calculateDepth",
       value: function calculateDepth(row) {
-        var depth = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+        var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
         var parentProp = this.treeColumn ? this.treeColumn.relationProp : this.groupColumn.prop;
         var prop = this.treeColumn.prop;
@@ -1078,10 +1085,12 @@
         var _this4 = this;
 
         var temp = [];
-
+        var groupColumn = this.groupColumn;
         angular.forEach(this.rowsByGroup, function (v, k) {
           temp.push({
             name: k,
+            display: angular.isDefined(groupColumn.cellDataGetter) ? groupColumn.cellDataGetter(k) : k,
+            count: v.length,
             group: true
           });
 
