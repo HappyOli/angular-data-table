@@ -65,23 +65,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var PagerController = function () {
   PagerController.$inject = ["$scope"];
   function PagerController($scope) {
-    var _this = this;
+    var _this2 = this;
 
     _classCallCheck(this, PagerController);
 
     $scope.$watch('pager.count', function (newVal) {
-      _this.calcTotalPages(_this.size, _this.count);
-      _this.getPages(_this.page || 1);
+      _this2.calcTotalPages(_this2.size, _this2.count);
+      _this2.getPages(_this2.page || 1);
     });
 
     $scope.$watch('pager.size', function (newVal) {
-      _this.calcTotalPages(_this.size, _this.count);
-      _this.getPages(_this.page || 1);
+      _this2.calcTotalPages(_this2.size, _this2.count);
+      _this2.getPages(_this2.page || 1);
     });
 
     $scope.$watch('pager.page', function (newVal) {
-      if (newVal !== 0 && newVal <= _this.totalPages) {
-        _this.getPages(newVal);
+      if (newVal !== 0 && newVal <= _this2.totalPages) {
+        _this2.getPages(newVal);
       }
     });
 
@@ -175,13 +175,13 @@ function PagerDirective() {
 var FooterController = function () {
   FooterController.$inject = ["$scope"];
   function FooterController($scope) {
-    var _this2 = this;
+    var _this3 = this;
 
     _classCallCheck(this, FooterController);
 
     this.page = this.paging.offset + 1;
     $scope.$watch('footer.paging.offset', function (newVal) {
-      _this2.offsetChanged(newVal);
+      _this3.offsetChanged(newVal);
     });
   }
 
@@ -819,12 +819,13 @@ function ScrollerDirective($timeout, $rootScope) {
 var BodyController = function () {
   BodyController.$inject = ["$scope", "$timeout"];
   function BodyController($scope, $timeout) {
-    var _this3 = this;
+    var _this4 = this;
 
     _classCallCheck(this, BodyController);
 
     this.$scope = $scope;
     this.tempRows = [];
+    var _this = this;
 
     this.treeColumn = this.options.columns.find(function (c) {
       return c.isTreeColumn;
@@ -835,10 +836,12 @@ var BodyController = function () {
     });
 
     $scope.$watch('body.columns', function () {
-      this.groupColumn = this.options.columns.find(function (c) {
+      _this.groupColumn = _this.options.columns.find(function (c) {
         return c.group;
       });
-      this.rowsUpdated(true);
+      if (angular.isDefined(_this.rows)) {
+        _this.rowsUpdated(true);
+      }
     }, true);
 
     $scope.$watchCollection('body.rows', this.rowsUpdated.bind(this));
@@ -847,21 +850,21 @@ var BodyController = function () {
       var sized = false;
       $scope.$watch('body.options.paging.size', function (newVal, oldVal) {
         if (!sized || newVal > oldVal) {
-          _this3.getRows();
+          _this4.getRows();
           sized = true;
         }
       });
 
       $scope.$watch('body.options.paging.count', function (count) {
-        _this3.count = count;
-        _this3.updatePage();
+        _this4.count = count;
+        _this4.updatePage();
       });
 
       $scope.$watch('body.options.paging.offset', function (newVal) {
-        if (_this3.options.paging.size) {
-          _this3.onPage({
+        if (_this4.options.paging.size) {
+          _this4.onPage({
             offset: newVal,
-            size: _this3.options.paging.size
+            size: _this4.options.paging.size
           });
         }
       });
@@ -1041,7 +1044,7 @@ var BodyController = function () {
   }, {
     key: "buildGroups",
     value: function buildGroups() {
-      var _this4 = this;
+      var _this5 = this;
 
       var temp = [];
       var groupColumn = this.groupColumn;
@@ -1053,7 +1056,7 @@ var BodyController = function () {
           group: true
         });
 
-        if (_this4.expanded[k]) {
+        if (_this5.expanded[k]) {
           temp.push.apply(temp, _toConsumableArray(v));
         }
       });
@@ -1757,10 +1760,10 @@ var DataTableService = {
     }
   },
   buildColumns: function buildColumns(scope, parse) {
-    var _this5 = this;
+    var _this6 = this;
 
     angular.forEach(this.dTables, function (columnElms, id) {
-      _this5.columns[id] = [];
+      _this6.columns[id] = [];
 
       angular.forEach(columnElms, function (c) {
         var column = {};
@@ -1802,7 +1805,7 @@ var DataTableService = {
           column.template = c.innerHTML;
         }
 
-        if (visible) _this5.columns[id].push(column);
+        if (visible) _this6.columns[id].push(column);
       });
     });
 
@@ -2068,7 +2071,7 @@ var TableDefaults = {
 var DataTableController = function () {
   DataTableController.$inject = ["$scope", "$filter", "$log", "$transclude"];
   function DataTableController($scope, $filter, $log, $transclude) {
-    var _this6 = this;
+    var _this7 = this;
 
     _classCallCheck(this, DataTableController);
 
@@ -2083,19 +2086,19 @@ var DataTableController = function () {
     this.options.$outer = $scope.$parent;
 
     $scope.$watch('dt.options.columns', function (newVal, oldVal) {
-      _this6.transposeColumnDefaults();
+      _this7.transposeColumnDefaults();
 
       if (newVal.length !== oldVal.length) {
-        _this6.adjustColumns();
+        _this7.adjustColumns();
       }
 
-      _this6.calculateColumns();
+      _this7.calculateColumns();
     }, true);
 
     var watch = $scope.$watch('dt.rows', function (newVal) {
       if (newVal) {
         watch();
-        _this6.onSorted();
+        _this7.onSorted();
       }
     });
   }
@@ -2103,15 +2106,15 @@ var DataTableController = function () {
   _createClass(DataTableController, [{
     key: "defaults",
     value: function defaults() {
-      var _this7 = this;
+      var _this8 = this;
 
       this.expanded = this.expanded || {};
 
       this.options = angular.extend(angular.copy(TableDefaults), this.options);
 
       angular.forEach(TableDefaults.paging, function (v, k) {
-        if (!_this7.options.paging[k]) {
-          _this7.options.paging[k] = v;
+        if (!_this8.options.paging[k]) {
+          _this8.options.paging[k] = v;
         }
       });
 
