@@ -9,7 +9,8 @@
   },
    "main": [
     "release/dataTable.js",
-    "release/dataTable.css"
+    "release/dataTable.css",
+     "release/material.css"
   ],
   "description": "A feature-rich but lightweight ES6 AngularJS Data Table crafted for large data sets!",
   "keywords": [

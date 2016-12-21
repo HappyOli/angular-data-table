@@ -451,7 +451,7 @@ function GroupRowDirective() {
     },
     scope: true,
     replace: true,
-    template: "\n      <div class=\"dt-group-row\">\n        <span ng-class=\"group.treeClass()\"\n              ng-click=\"group.onGroupToggled($event)\">\n        </span>\n        <span class=\"dt-group-row-label\" ng-bind=\"group.row.name\">\n        </span>\n      </div>",
+    template: "\n      <div class=\"dt-group-row\">\n        <span ng-class=\"group.treeClass()\"\n              ng-click=\"group.onGroupToggled($event)\">\n        </span>\n        <span class=\"dt-group-row-label\">\n          {{group.row.display}} ({{group.row.count}})\n        </span>\n      </div>",
     link: function link($scope, $elm, $attrs, ctrl) {
       TranslateXY($elm[0].style, 0, ctrl.row.$$index * ctrl.options.rowHeight);
 

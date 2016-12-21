@@ -19,7 +19,8 @@ export function GroupRowDirective(){
         <span ng-class="group.treeClass()"
               ng-click="group.onGroupToggled($event)">
         </span>
-        <span class="dt-group-row-label" ng-bind="group.row.name">
+        <span class="dt-group-row-label">
+          {{group.row.display}} ({{group.row.count}})
         </span>
       </div>`,
     link: function($scope, $elm, $attrs, ctrl){
